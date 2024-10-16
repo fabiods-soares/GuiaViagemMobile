@@ -2,13 +2,11 @@ package com.trave.travel;
 
 import android.os.Bundle;
 import android.os.Handler;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText txtKML;
     private TextView lblDistancia;
     private TextView lblLitros;
-    private Viagem viagem;
+    private DistanciaEntreCidades sistema;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         lblLitros = findViewById(R.id.lblLitros);
         Button btnCalcular = findViewById(R.id.btnCalcular);
 
+        sistema = DistanciaEntreCidades.getInstance();  // Inicializa a classe que contém as cidades
+
         // Carregar cidades nos spinners
-
         carregarCidades();
-
 
         // Configurar o listener para o botão
         btnCalcular.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void carregarCidades() {
-        List<String> cidades = new ArrayList<>(Viagem.getCidades().keySet());
+        // Obtém as cidades a partir do mapa de distâncias
+        List<String> cidades = sistema.obterCidades();
 
         // Adiciona o item padrão ao início da lista
         cidades.add(0, "Selecione");
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         spinnerPartida.setAdapter(adapter);
         spinnerDestino.setAdapter(adapter);
-
     }
 
     private void calcularViagem() {
@@ -88,15 +87,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        viagem = new Viagem();
-        viagem.setPartida(partida);
-        viagem.setDestino(destino);
-        viagem.setKml(kml);
+        sistema.setPartida(partida);
+        sistema.setDestino(destino);
+        sistema.setKml(kml);
 
-        double distancia = viagem.DistanciaAB();
-        double litros = viagem.LitrosGastos();
+        try {
+            double distancia = sistema.obterDistancia();
+            double litros = sistema.LitrosGastos();
 
-        lblDistancia.setText(String.format("Distância: %.2f km", distancia));
-        lblLitros.setText(String.format("Litros gastos: %.2f L", litros));
+            lblDistancia.setText(String.format("Distância: %.2f km", distancia));
+            lblLitros.setText(String.format("Litros gastos: %.2f L", litros));
+        } catch (IllegalArgumentException e) {
+            lblDistancia.setText(e.getMessage());
+            lblLitros.setText("");
+        }
     }
 }

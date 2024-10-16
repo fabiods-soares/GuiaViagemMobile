@@ -23,24 +23,12 @@
         android:background="#FFFFFF"
         android:text="Calculadora de Viagem"
         android:textAlignment="center"
-        android:textColor="#AF00FA"
+        android:textColor="@color/design_default_color_error"
+        android:textColorLink="#F60202"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
-        android:text="Boa Viagem !!"
-        android:textAlignment="center"
-        android:textColor="#0101F4"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
